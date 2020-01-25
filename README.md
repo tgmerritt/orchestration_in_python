@@ -10,6 +10,29 @@ In this particular sample, a entire orchestration layer has been setup including
 
 In ```orchestration.py```, there is a function called ```make_request``` which has been stubbed for your convenience as the starting point for custom NLP implementation.  There are a number of libraries in Python to make [HTTP requests](https://www.geeksforgeeks.org/get-post-requests-using-python/)
 
+### Run tests
+
+You can run the (single) test using ```pytest```
+
+You may need to install the libraries such as pytest, flask, etc., but if this is not your first Python application you may already have these installed.  But if not...
+
+```
+pip install flask pytest requests
+```
+
+In one terminal, from the root of the project:
+```
+export FLASK_ENV=development FLASK_APP=orchestration.py
+flask run
+```
+
+This starts the flask server running the orchestration.py file, it's effectively now a webservice listening for requests on localhost:5000
+
+Next open a new shell and navigate to the same project folder:
+```
+pytest -v
+```
+
 ### No Warranty
 
 This is a sample project, and the code is delivered as-is.  No support or warranty, express or implied, is extended to this repository or any fork.  You are responsible for the implementation and maintenance of this code should you choose to use it in any capacity.  Resources permitting, we are happy to answer questions related to orchestration design.
