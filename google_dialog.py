@@ -1,7 +1,8 @@
 import dialogflow_v2 as dialogflow
 import json
 from google.protobuf.json_format import MessageToJson
-import pprint
+from dateutil.parser import parse
+import time
 from bs4 import BeautifulSoup
 
 
@@ -16,9 +17,8 @@ class GoogleDialog:
     def query_dialogflow(self):
         json_res = self.send_query_to_dialogflow()
         # formatted_res = self.parse_fulfillment_text(json_res['fulfillmentText'])
-        formatted_res = json_res['fulfillmentText']
-        self.res = self.create_json_to_send(formatted_res)
-        pprint.pprint(self.res)
+        text = self.parse_fulfillment_text(json_res['fulfillmentText'])
+        self.res = self.create_json_to_send(text)
         return self.res
         # self.create_json_to_send(self.parse_fulfillment_text(self.res['fulfillmentText']))
 
@@ -44,17 +44,27 @@ class GoogleDialog:
         session = session_client.session_path(self.project_id, self.session_id)
         return session, session_client
 
-    # def parse_fulfillment_text(text):
-    #     if "<speak>" in text:
-    #         b = BeautifulSoup(text, 'html.parser')
-    #         if "interpret-as" in text:
-    #             for e in bs.find_all('say-as'):
-    #                 if e['interpret-as'] == 'date':
-
-    #                 elif e['interpret-as'] == 'time':
-    #                 else:
-    #                     pass
-    #     return formatted_text
+    def parse_fulfillment_text(self, text):
+        if "<speak>" in text:
+            b = BeautifulSoup(text, 'html.parser')
+            if "interpret-as" in text:
+                for e in b.find_all('say-as'):
+                    if e['interpret-as'] == 'date':
+                        date = parse(e.string)
+                        e.string = str(date.date())
+                    elif e['interpret-as'] == 'time':
+                        # new_time = time.strptime(e.string, "%H:%M:%S")
+                        # t = str(new_time.time()).split(":")
+                        # print("t is now: {time}".format(time=t))
+                        t = e.string.split(":")
+                        e.string = t[0]+":"+t[1]
+                    else:
+                        pass
+            print("This is the beautiful soup variable:")
+            print(b)
+            return str(b)
+        else:
+            return text
 
     def create_json_to_send(self, text):
         # In our example, data is an empty object,
