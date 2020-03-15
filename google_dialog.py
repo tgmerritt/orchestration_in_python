@@ -2,7 +2,6 @@ import dialogflow_v2 as dialogflow
 import json
 from google.protobuf.json_format import MessageToJson
 from dateutil.parser import parse
-import time
 from bs4 import BeautifulSoup
 
 
@@ -16,11 +15,9 @@ class GoogleDialog:
 
     def query_dialogflow(self):
         json_res = self.send_query_to_dialogflow()
-        # formatted_res = self.parse_fulfillment_text(json_res['fulfillmentText'])
         text = self.parse_fulfillment_text(json_res['fulfillmentText'])
         self.res = self.create_json_to_send(text)
         return self.res
-        # self.create_json_to_send(self.parse_fulfillment_text(self.res['fulfillmentText']))
 
     # By wrapping the dialogflow logic inside this function, we can mock it under test without having to worry about patching dialogflow functions
     def send_query_to_dialogflow(self):
@@ -44,6 +41,7 @@ class GoogleDialog:
         session = session_client.session_path(self.project_id, self.session_id)
         return session, session_client
 
+    # Sometimes the Dialogflow response may include SSML markup, in this case, we may need to format date and time values so they can be spoken properly
     def parse_fulfillment_text(self, text):
         if "<speak>" in text:
             b = BeautifulSoup(text, 'html.parser')
@@ -66,6 +64,7 @@ class GoogleDialog:
         else:
             return text
 
+    # Build the JSON that we should return in response to the original POST
     def create_json_to_send(self, text):
         # In our example, data is an empty object,
         answer_body = {
