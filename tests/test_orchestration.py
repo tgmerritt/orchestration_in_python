@@ -21,7 +21,7 @@ class TestTransactions():
             url+'/transcript', data=json.dumps(data), headers=headers)
 
         assert result.status_code == 200
-        assert result.headers['Content-Type'] == 'application/json' 
+        assert result.headers['Content-Type'] == 'application/json'
         assert result.json() == {
             "answer": "{\"answer\":\"Do you like coffee?\",\"instructions\":{\"expressionEvent\":[{}],\"emotionalTone\":[{\"tone\":\"happiness\",\"value\":0.2,\"start\":2,\"duration\":4,\"additive\":false,\"default\":true}]}}",
             "conversationPayload": "{\"sessionId\":\"12345\"}",
