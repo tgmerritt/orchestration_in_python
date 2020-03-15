@@ -10,9 +10,11 @@ In this particular sample, a entire orchestration layer has been setup including
 
 In ```orchestration.py```, there is a function called ```make_request``` which has been stubbed for your convenience as the starting point for custom NLP implementation.  There are a number of libraries in Python to make [HTTP requests](https://www.geeksforgeeks.org/get-post-requests-using-python/)
 
+This project has a connection already with Google's Dialogflow and has been designed to process requests from that NLP engine that include UneeQ-specific tags such as emotionalTone and expressionEvent.  If you are using Google Dialogflow, you can simply add your json credentials file into the root of this project and deploy it to a service that will run Flask.  It should automatically work with your Dialogflow instance, and you should test this using a tool like Postman.
+
 ### Run tests
 
-You can run the (single) test using ```pytest```
+You can run the tests using ```python -m pytest -s -vv tests/```
 
 You may need to install the libraries such as pytest, flask, etc., but if this is not your first Python application you may already have these installed.  But if not...
 
@@ -30,7 +32,7 @@ This starts the flask server running the orchestration.py file, it's effectively
 
 Next open a new shell and navigate to the same project folder:
 ```
-pytest -v
+python -m pytest -s -vv tests/
 ```
 
 ### No Warranty
