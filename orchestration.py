@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import json
-import google_dialog
+from . import google_dialog
 
 app = Flask(__name__)
 app.config["DEBUG"] = True

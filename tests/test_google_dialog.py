@@ -1,7 +1,7 @@
 import unittest
-import mock
+from mock import patch
 import json
-import google_dialog
+from .. import google_dialog
 # import ipdb
 # ipdb.set_trace() to set a breakpoint for debugging
 # Use the ! operator before any python statement inside the ipdb console, i.e. !print(response)
@@ -174,16 +174,27 @@ class TestGoogleDialog(unittest.TestCase):
         parsed = gd.parse_fulfillment_text(text)
         assert parsed == '<speak>かしこまりました。</speak>'
 
-    @mock.patch('google_dialog.GoogleDialog.send_query_to_dialogflow', side_effect=new_send_query_to_dialogflow)
-    def test_send_query_to_dialogflow(self, send_query_to_dialogflow):
+    # https://myadventuresincoding.wordpress.com/2011/02/26/python-python-mock-cheat-sheet/amp/
+    @patch.object(google_dialog.GoogleDialog, 'send_query_to_dialogflow')
+    def test_send_query_to_dialogflow(self, mock_send_query_to_dialogflow):
+        def side_effect():
+            return new_send_query_to_dialogflow()
+
+        mock_send_query_to_dialogflow.side_effect = side_effect
+
         gd = google_dialog.GoogleDialog(
             {}, "blah", "632c2f78-ca23-4cc2-8c1a-ad8e2403ca64")
         response = gd.query_dialogflow()
         assert response == {
             'answer': '{"answer":"<speak>かしこまりました。<say-as interpret-as=\\"date\\">2020-03-03</say-as>の<say-as interpret-as=\\"time\\">16:05</say-as>でよろしいですね。空き状況を確認します。しばらくお待ち下さい。</speak>","instructions":{}}', 'matchedContext': '', 'conversationPayload': ''}
 
-    @mock.patch('google_dialog.GoogleDialog.send_query_to_dialogflow', side_effect=html_send_query)
-    def test_send_query_with_html(self, send_query_to_dialogflow):
+    @patch.object(google_dialog.GoogleDialog, 'send_query_to_dialogflow')
+    def test_send_query_with_html(self, mock_send_query_to_dialogflow):
+        def side_effect():
+            return html_send_query()
+
+        mock_send_query_to_dialogflow.side_effect = side_effect
+
         gd = google_dialog.GoogleDialog(
             {}, "blah", "632c2f78-ca23-4cc2-8c1a-ad8e2403ca64")
         response = gd.query_dialogflow()
